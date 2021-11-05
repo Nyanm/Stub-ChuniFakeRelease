@@ -51,7 +51,12 @@ if __name__ == '__main__':
             name += jk_name[index]
 
         jk = Image.open(jk_path)
-        if jk.width != 450:
+        jk_x, jk_y = jk.size
+        if jk_x > jk_y:
+            jk = jk.crop(((jk_x - jk_y) // 2, 0, (jk_x + jk_y) // 2), jk_y)
+        elif jk_y > jk_x:
+            jk = jk.crop((0, (jk_y - jk_x) // 2, jk_x, (jk_y + jk_x) // 2))
+        if jk_x != 450:
             jk = jk.resize((jk_size, jk_size))
         bg.paste(jk, box=jk_pos)
 
@@ -59,9 +64,11 @@ if __name__ == '__main__':
         font_name = ImageFont.truetype(font_path, 34, encoding='utf-8')
         font_art = ImageFont.truetype(font_path, 25, encoding='utf-8')
 
+
         def draw_center(text, pos_y, __font):
             offset = __font.getsize(text)[0] // 2
             pen.text((bg_x // 2 - offset, pos_y), text, color_white, font=__font)
+
 
         draw_center(name, 788, font_name)
         draw_center(artist, 865, font_art)
